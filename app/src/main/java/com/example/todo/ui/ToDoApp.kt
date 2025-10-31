@@ -2,7 +2,6 @@ package com.example.todo.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,7 +15,6 @@ import java.time.LocalDateTime
 fun TodoApp() {
     var taskText by remember { mutableStateOf("") }
     val tasks = remember { mutableStateListOf<Task>() }
-//    val tasks = remember { mutableStateListOf<String>() }
 
     fun addTask() {
         if (taskText.isNotBlank()) {
