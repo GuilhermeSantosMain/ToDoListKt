@@ -3,26 +3,35 @@ package com.example.todo.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import data.model.Task
+import java.time.LocalDateTime
 
 @Composable
 fun TodoApp() {
     var taskText by remember { mutableStateOf("") }
-    var tasks by remember { mutableStateOf(listOf<String>()) }
+    val tasks = remember { mutableStateListOf<Task>() }
+//    val tasks = remember { mutableStateListOf<String>() }
 
     fun addTask() {
         if (taskText.isNotBlank()) {
-            tasks = tasks + taskText
+            val newTask = Task(
+                id = tasks.size,
+                name = taskText,
+                date = LocalDateTime.now()
+            )
+            tasks.add(newTask)
             taskText = ""
         }
     }
 
-    fun removeTask(task: String) {
-        tasks = tasks - task
+    fun removeTask(taskIndex: Int) {
+        tasks.removeAt(taskIndex)
     }
 
     Column(
@@ -53,15 +62,15 @@ fun TodoApp() {
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn {
-            items(tasks) { task ->
-                TodoItem(task, onRemove = {removeTask(task)})
+            itemsIndexed(tasks) { index, task ->
+                TodoItem(task, onRemove = {removeTask(index)})
             }
         }
     }
 }
 
 @Composable
-fun TodoItem(task: String, onRemove: () -> Unit) {
+fun TodoItem(task: Task, onRemove: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -75,7 +84,7 @@ fun TodoItem(task: String, onRemove: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(task)
+            Text(task.name)
             TextButton(onClick = onRemove) {
                 Text("Remover", color = MaterialTheme.colorScheme.error)
             }
